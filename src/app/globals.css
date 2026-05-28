@@ -25,7 +25,7 @@ body {
 .container {
   max-width: 500px;
   margin: 0 auto;
-  padding: 48px 32px 80px;
+  padding: 96px 32px 80px;
 }
 
 h1 {
@@ -345,4 +345,43 @@ td.fact-cell {
 
 .reset-btn:hover {
   color: #F5CE00;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 32px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: #2A3870;
+}
+
+/* ── Dream history (idle state) ── */
+.history {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history .found-label {
+  margin-bottom: 4px;
+}
+
+.history-item {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Futura", "Futura-Medium", "Century Gothic", sans-serif;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.6;
+  color: #6A7090;
+  transition: color 0.12s;
+}
+
+.history-item:hover {
+  color: #D4B300;
 }

@@ -36,7 +36,14 @@ Flag any of the following:
 Do not describe a departure neutrally and then omit the flag. If a fact records something that departs from the image's normal use or nature, the index must appear in abnormalIndices.
 
 — On the note —
-After reading all the images, decide whether there is one thing genuinely worth stating. If so, write one sentence — the way Yoram Kaufmann would say it aloud in a session: plain, direct, no hedging, no interpretation. A remark about what is actually present. Not a summary. Not a conclusion. One sentence. If there is nothing that rises to that level, omit it entirely.
+After reading all the images, decide whether there is one thing genuinely worth stating. If so, write one sentence — the way Yoram Kaufmann would say it aloud in a session: plain, direct, no hedging, no interpretation.
+
+The note must say something true about the nature of what is present — not restate what happened in the dream. Do not describe the events. Do not paraphrase the plot. State a fact about what one of the images actually is, or what the combination of images actually establishes as the situation.
+
+Wrong: "Something that belongs in one place has been put somewhere it cannot properly go."
+Right: "A cabinet is built to hold and preserve things; urine is what the body expels."
+
+One sentence. If nothing rises to that level, omit it.
 
 — On ranking —
 Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.

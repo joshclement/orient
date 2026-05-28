@@ -5,12 +5,37 @@ import type { DreamImage } from "@/lib/db";
 
 type AppState = "idle" | "loading" | "done";
 
-const PLACEHOLDER = "I dream of a shark in the river. There is also a giant squid.";
+const PLACEHOLDER = "I am sitting on a rickety raft in the ocean, surrounded by sharks.";
+const HISTORY_KEY = "dream-reader:history";
+const MAX_HISTORY = 5;
+
+interface HistoryEntry {
+  dream: string;
+  images: DreamImage[];
+  note: string | null;
+}
 
 function sortSectionsContextFirst(sections: DreamImage["sections"]) {
   const context = sections.filter((s) => s.label.toLowerCase().includes("context"));
   const rest = sections.filter((s) => !s.label.toLowerCase().includes("context"));
   return [...context, ...rest];
+}
+
+function loadHistory(): HistoryEntry[] {
+  try {
+    const raw = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]");
+    return (Array.isArray(raw) ? raw : []).filter(
+      (e): e is HistoryEntry => e && typeof e === "object" && typeof e.dream === "string" && Array.isArray(e.images)
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveToHistory(entry: HistoryEntry) {
+  const prev = loadHistory().filter((e) => e.dream !== entry.dream);
+  const next = [entry, ...prev].slice(0, MAX_HISTORY);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
 }
 
 export default function Home() {
@@ -20,16 +45,11 @@ export default function Home() {
   const [images, setImages] = useState<DreamImage[]>([]);
   const [note, setNote] = useState<string | null>(null);
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  const [loadingWord, setLoadingWord] = useState("Decoding");
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
-    if (appState !== "loading") return;
-    setLoadingWord("Decoding");
-    const interval = setInterval(() => {
-      setLoadingWord((w) => (w === "Decoding" ? "Translating" : "Decoding"));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [appState]);
+    setHistory(loadHistory());
+  }, []);
 
   async function translate() {
     if (!dream.trim()) return;
@@ -48,14 +68,27 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unknown error");
       const imgs: DreamImage[] = data.images ?? [];
+      const n: string | null = data.note ?? null;
       setImages(imgs);
-      setNote(data.note ?? null);
+      setNote(n);
       setActiveKey(imgs[0]?.key ?? null);
+      const entry: HistoryEntry = { dream: dream.trim(), images: imgs, note: n };
+      saveToHistory(entry);
+      setHistory(loadHistory());
       setAppState("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
       setAppState("idle");
     }
+  }
+
+  function restore(entry: HistoryEntry) {
+    setDream(entry.dream);
+    setImages(entry.images);
+    setNote(entry.note);
+    setActiveKey(entry.images[0]?.key ?? null);
+    setError(null);
+    setAppState("done");
   }
 
   function reset() {
@@ -79,7 +112,7 @@ export default function Home() {
             <div className="loading-dot" />
             <div className="loading-dot" />
           </div>
-          <span className="loading-word">{loadingWord}</span>
+          <span className="loading-word">Translating</span>
         </div>
       </div>
     );
@@ -174,6 +207,17 @@ export default function Home() {
         Translate →
       </button>
       {error && <div className="error-block">{error}</div>}
+
+      {history.length > 0 && (
+        <div className="history">
+          <div className="found-label">Recent</div>
+          {history.map((entry, i) => (
+            <button key={i} className="history-item" onClick={() => restore(entry)}>
+              "{entry.dream}"
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

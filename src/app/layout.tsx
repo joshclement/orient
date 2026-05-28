@@ -14,7 +14,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-{children}
+        {children}
+        <footer className="footer">Inspired by the orientational approach of Yoram Kaufmann</footer>
       </body>
     </html>
   );
