@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import { db, type DreamImage } from "@/lib/db";
+import type { DreamImage } from "@/lib/db";
 
 const SYSTEM_PROMPT = `You are a dream image reader working in the "Way of the Image" / orientational approach.
 
@@ -13,9 +13,13 @@ Wrong: "The river represents the flow of the unconscious."
 Right: "Rivers move in one direction, from higher to lower elevation."
 
 — On each image —
-Choose 2–4 section labels that fit the image (e.g. Body, Behavior, Habitat, Movement, Structure).
+Choose 2–4 section labels from this list: Body, Behavior, Habitat, Movement, Ecology, Structure, Myth.
+Use whichever labels fit the image — not all are required, but prefer labels that produce the most specific, observable facts.
 Write 3–6 facts per section. Plain. Specific. Observable.
 Add a "Context in this dream" section with 2–3 facts about how this image appears in this specific dream.
+
+— On the Myth section —
+Include a Myth section when the image has a documented presence in mythology, folklore, alchemy, religion, or fairy tale. Write only what the image actually does or is in those stories — not what it symbolises. If a river swallows a hero in a myth, write that. Also include patterns in how humans have consistently encountered or responded to this image across cultures and history: what they built around it, feared, revered, or institutionalised. Keep this factual. No interpretation.
 
 — On anomaly detection —
 In the "Context in this dream" section, flag any fact where the image appears in a way that departs from its normal context. Do not limit flags to environmental impossibilities. Flag:
@@ -121,23 +125,9 @@ export async function POST(request: NextRequest) {
 
     const { images } = toolUse.input as { images: DreamImage[] };
 
-    const merged = images.map((img) => {
-      const curated = db[img.key];
-      if (!curated) return img;
+    images.sort((a, b) => a.interestRank - b.interestRank);
 
-      const contextSection = img.sections.find((s) =>
-        s.label.toLowerCase().includes("context")
-      );
-      const sections = contextSection
-        ? [...curated.sections, contextSection]
-        : curated.sections;
-
-      return { ...curated, interestRank: img.interestRank, sections, gap: img.gap };
-    });
-
-    merged.sort((a, b) => a.interestRank - b.interestRank);
-
-    return NextResponse.json({ images: merged });
+    return NextResponse.json({ images });
   } catch (err) {
     console.error(err);
     return NextResponse.json(
