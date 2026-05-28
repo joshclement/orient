@@ -1,21 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { DreamImage } from "@/lib/db";
 
-const PLACEHOLDER =
-  "I'm in a swamp, near the edge of water. I see an alligator. I see a porcupine in the bushes too.";
+type AppState = "idle" | "loading" | "done";
+
+const PLACEHOLDER = "I dream of a shark in the river. There is also a giant squid.";
+
+function sortSectionsContextFirst(sections: DreamImage["sections"]) {
+  const context = sections.filter((s) => s.label.toLowerCase().includes("context"));
+  const rest = sections.filter((s) => !s.label.toLowerCase().includes("context"));
+  return [...context, ...rest];
+}
 
 export default function Home() {
-  const [dream, setDream] = useState(PLACEHOLDER);
-  const [loading, setLoading] = useState(false);
+  const [appState, setAppState] = useState<AppState>("idle");
+  const [dream, setDream] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<DreamImage[]>([]);
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [loadingWord, setLoadingWord] = useState("Decoding");
 
-  async function readImages() {
+  useEffect(() => {
+    if (appState !== "loading") return;
+    setLoadingWord("Decoding");
+    const interval = setInterval(() => {
+      setLoadingWord((w) => (w === "Decoding" ? "Translating" : "Decoding"));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [appState]);
+
+  async function translate() {
     if (!dream.trim()) return;
-    setLoading(true);
+    setAppState("loading");
     setError(null);
     setImages([]);
     setActiveKey(null);
@@ -31,95 +48,115 @@ export default function Home() {
       const imgs: DreamImage[] = data.images ?? [];
       setImages(imgs);
       setActiveKey(imgs[0]?.key ?? null);
+      setAppState("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setLoading(false);
+      setAppState("idle");
     }
+  }
+
+  function reset() {
+    setAppState("idle");
+    setDream("");
+    setImages([]);
+    setActiveKey(null);
+    setError(null);
   }
 
   const activeImage = images.find((img) => img.key === activeKey) ?? null;
 
-  return (
-    <div className="container">
-      <h1>Dream Image Reader</h1>
-
-      <p className="intro">
-        Describe your dream below. Each image will be translated according to its
-        objective nature — not your associations, not your life context. The orient
-        emerges from what the thing actually is.
-      </p>
-
-      <div className="input-label">Dream</div>
-      <textarea
-        value={dream}
-        onChange={(e) => setDream(e.target.value)}
-        placeholder={PLACEHOLDER}
-        rows={4}
-      />
-      <button
-        className="reread-btn"
-        onClick={readImages}
-        disabled={loading || !dream.trim()}
-      >
-        {loading ? "Reading…" : "Read images →"}
-      </button>
-
-      {loading && (
-        <div className="loading">
+  // ── Loading screen ──────────────────────────────────────────────
+  if (appState === "loading") {
+    return (
+      <div className="loading-screen">
+        <div className="loading-screen-inner">
           <div className="loading-dots">
             <div className="loading-dot" />
             <div className="loading-dot" />
             <div className="loading-dot" />
           </div>
-          Reading images
+          <span className="loading-word">{loadingWord}</span>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {error && (
-        <div className="error-block">{error}</div>
-      )}
+  // ── Results screen ──────────────────────────────────────────────
+  if (appState === "done") {
+    return (
+      <div className="container">
+        <div className="dream-readonly">
+          <p className="dream-readonly-text">"{dream}"</p>
+          <button className="reset-btn" onClick={reset}>↩ New dream</button>
+        </div>
 
-      {!loading && images.length > 0 && (
-        <div className="found-section">
-          <div className="found-label">Images found</div>
-          <div className="pills">
-            {images.map((img) => (
-              <button
-                key={img.key}
-                className={`pill${activeKey === img.key ? " active" : ""}`}
-                onClick={() => setActiveKey(img.key)}
-              >
-                {img.name}
-              </button>
-            ))}
-          </div>
+        {error && <div className="error-block">{error}</div>}
 
-          {activeImage && (
-            <>
-              <hr className="divider" />
-              <div className="image-name">{activeImage.name}</div>
-              {activeImage.sections.map((section) => (
-                <div className="section-group" key={section.label}>
-                  <div className="section-label">{section.label}</div>
-                  <table>
-                    <tbody>
-                      {section.facts.map((fact, i) => (
-                        <tr key={i}>
-                          <td className="fact-cell">{fact}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+        {images.length > 0 && (
+          <div className="found-section">
+            <div className="found-label">Images found</div>
+            <div className="pills">
+              {images.map((img) => (
+                <button
+                  key={img.key}
+                  className={`pill${activeKey === img.key ? " active" : ""}`}
+                  onClick={() => setActiveKey(img.key)}
+                >
+                  {img.name}
+                </button>
               ))}
-              <div className="orient-block">
-                <p className="orient-text">{activeImage.orient}</p>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+            </div>
+
+            {activeImage && (
+              <>
+                <hr className="divider" />
+                <div className="image-name">{activeImage.name}</div>
+                {sortSectionsContextFirst(activeImage.sections).map((section) => (
+                  <div className="section-group" key={section.label}>
+                    <div className="section-label">{section.label}</div>
+                    <table>
+                      <tbody>
+                        {section.facts.map((fact, i) => (
+                          <tr key={i}>
+                            <td className="fact-cell">
+                              {section.abnormalIndices?.includes(i) && (
+                                <span className="warning-sign" title="Strange or abnormal">⚠</span>
+                              )}
+                              {fact}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Idle / input screen ─────────────────────────────────────────
+  return (
+    <div className="container">
+      <h1 className="question-heading">What have you been dreaming about?</h1>
+      <textarea
+        value={dream}
+        onChange={(e) => setDream(e.target.value)}
+        placeholder={PLACEHOLDER}
+        rows={4}
+        autoFocus
+      />
+      <button
+        className="reread-btn"
+        onClick={translate}
+        disabled={!dream.trim()}
+      >
+        Translate →
+      </button>
+      {error && <div className="error-block">{error}</div>}
     </div>
   );
 }

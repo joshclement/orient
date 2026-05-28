@@ -23,7 +23,7 @@ body {
 }
 
 .container {
-  max-width: 780px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 48px 32px 80px;
 }
@@ -57,11 +57,12 @@ h1 {
 textarea {
   width: 100%;
   background: #0C1440;
-  border: 1px solid #1E2B66;
+  border: none;
+  border-radius: 24px;
   color: #F5CE00;
-  font-size: 15px;
+  font-size: 19px;
   line-height: 1.7;
-  padding: 14px 16px;
+  padding: 16px 20px;
   font-family: "Futura", "Futura-Medium", "Century Gothic", sans-serif;
   resize: vertical;
   min-height: 90px;
@@ -69,17 +70,18 @@ textarea {
 }
 
 textarea::placeholder { color: #4A5A99; }
-textarea:focus { border-color: #F5CE00; }
 
 .reread-btn {
   margin-top: 10px;
+  width: 100%;
   background: transparent;
   border: 1px solid #F5CE00;
+  border-radius: 24px;
   color: #F5CE00;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  padding: 8px 20px;
+  padding: 12px 20px;
   cursor: pointer;
   font-family: "Futura", "Futura-Medium", "Century Gothic", sans-serif;
   text-transform: uppercase;
@@ -239,3 +241,74 @@ td.fact-cell {
 }
 
 .section-group { margin-bottom: 8px; }
+
+.warning-sign {
+  margin-right: 7px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ── Question heading (idle state) ── */
+.question-heading {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  margin-bottom: 28px;
+}
+
+/* ── Loading screen ── */
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-screen-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.loading-word {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #A89A00;
+}
+
+/* ── Dream read-only (results state) ── */
+.dream-readonly {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #1E2B66;
+}
+
+.dream-readonly-text {
+  font-size: 18px;
+  line-height: 1.75;
+  color: #D4B300;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+.reset-btn {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4A5A99;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Futura", "Futura-Medium", "Century Gothic", sans-serif;
+  padding: 0;
+  transition: color 0.12s;
+}
+
+.reset-btn:hover {
+  color: #F5CE00;
+}

@@ -14,10 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="topbar">
-          <strong>The Way of the Image</strong> &nbsp;·&nbsp; Orientational Approach
-        </div>
-        {children}
+{children}
       </body>
     </html>
   );

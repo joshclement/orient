@@ -1,6 +1,7 @@
 export interface ImageSection {
   label: string;
   facts: string[];
+  abnormalIndices?: number[]; // indices of facts that are strange/out of place in this dream
 }
 
 export interface DreamImage {

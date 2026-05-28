@@ -10,7 +10,8 @@ For each image:
 - Choose 2–4 section labels that fit the image (e.g. Body, Behavior, Habitat, Character, Movement, Nature)
 - Write 3–6 brief facts per section describing the objective nature of the thing
 - Add a "Context in this dream" section with 2–3 observations about how this image appears specifically in this dream
-- Write an orient: 2–4 sentences beginning with "The orient is..." that translate the objective facts into what this image brings to the dream
+
+In the "Context in this dream" section: note any facts that are strange, out of place, or impossible given the image's actual nature. For example, a shark appearing in a freshwater river is abnormal — sharks cannot survive in fresh water. Flag these by including their 0-based index in abnormalIndices.
 
 Images to find: animals, places (swamp, forest, city), objects, structures, elements (water, fire), people (stranger, child), plants, weather — anything concrete that appears in the dream.
 
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
         {
           name: "read_dream_images",
           description:
-            "Return every concrete image found in the dream with factual sections and an orient.",
+            "Return every concrete image found in the dream with factual sections.",
           input_schema: {
             type: "object" as const,
             properties: {
@@ -71,16 +72,17 @@ export async function POST(request: NextRequest) {
                         properties: {
                           label: { type: "string" },
                           facts: { type: "array", items: { type: "string" } },
+                          abnormalIndices: {
+                            type: "array",
+                            items: { type: "number" },
+                            description: "0-based indices of facts that are strange or impossible given the image's actual nature",
+                          },
                         },
                         required: ["label", "facts"],
                       },
                     },
-                    orient: {
-                      type: "string",
-                      description: "2–4 sentences beginning with 'The orient is...'",
-                    },
                   },
-                  required: ["key", "name", "interestRank", "sections", "orient"],
+                  required: ["key", "name", "interestRank", "sections"],
                 },
               },
             },
@@ -100,13 +102,11 @@ export async function POST(request: NextRequest) {
     const { images } = toolUse.input as { images: DreamImage[] };
 
     // Merge: replace any image whose key matches a curated DB entry with the curated version,
-    // preserving the Claude-generated interestRank and adding a "Context in this dream" section
-    // from Claude's output if the curated entry doesn't have one.
+    // preserving the Claude-generated interestRank and context section (with abnormalIndices).
     const merged = images.map((img) => {
       const curated = db[img.key];
       if (!curated) return img;
 
-      // Use the curated facts/orient, but inject Claude's context section if present
       const contextSection = img.sections.find((s) =>
         s.label.toLowerCase().includes("context")
       );
@@ -117,7 +117,6 @@ export async function POST(request: NextRequest) {
       return { ...curated, interestRank: img.interestRank, sections };
     });
 
-    // Sort by interestRank
     merged.sort((a, b) => a.interestRank - b.interestRank);
 
     return NextResponse.json({ images: merged });
