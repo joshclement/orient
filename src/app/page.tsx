@@ -129,6 +129,13 @@ export default function Home() {
 
         {error && <div className="error-block">{error}</div>}
 
+        {note && (
+          <div className="note-block">
+            <div className="section-label">Worth noting</div>
+            <p className="note-text">{note}</p>
+          </div>
+        )}
+
         {images.length > 0 && (
           <div className="found-section">
             <div className="found-label">Images</div>
@@ -146,7 +153,6 @@ export default function Home() {
 
             {activeImage && (
               <>
-                <hr className="divider" />
                 <div className="image-name">{activeImage.name}</div>
                 {sortSectionsContextFirst(activeImage.sections).map((section) => (
                   <div className="section-group" key={section.label}>
@@ -172,12 +178,6 @@ export default function Home() {
           </div>
         )}
 
-        {note && (
-          <div className="note-block">
-            <div className="section-label">Worth noting</div>
-            <p className="note-text">{note}</p>
-          </div>
-        )}
       </div>
     );
   }
@@ -218,6 +218,7 @@ export default function Home() {
           ))}
         </div>
       )}
+
     </div>
   );
 }

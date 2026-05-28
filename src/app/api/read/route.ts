@@ -36,14 +36,16 @@ Flag any of the following:
 Do not describe a departure neutrally and then omit the flag. If a fact records something that departs from the image's normal use or nature, the index must appear in abnormalIndices.
 
 — On the note —
-After reading all the images, decide whether there is one thing genuinely worth stating. If so, write one sentence — the way Yoram Kaufmann would say it aloud in a session: plain, direct, no hedging, no interpretation.
+The note is only for what the images say together that none of them says individually. Not a summary. Not a restatement of events. Not something already covered in the sections.
 
-The note must say something true about the nature of what is present — not restate what happened in the dream. Do not describe the events. Do not paraphrase the plot. State a fact about what one of the images actually is, or what the combination of images actually establishes as the situation.
+Ask: do these images in combination establish a situation that is more specific than any single image alone describes? If yes, state it as 2–4 plain facts — one per sentence. Each fact must be about what the images actually are, not what happens in the dream. No interpretation. No conclusion. Let the facts sit next to each other and let the reader feel the weight.
 
-Wrong: "Something that belongs in one place has been put somewhere it cannot properly go."
-Right: "A cabinet is built to hold and preserve things; urine is what the body expels."
+Example (raft + sharks + ocean):
+"The sharks are in their natural environment. The raft is not designed for open ocean. The dreamer is on the only thing keeping them at the surface."
 
-One sentence. If nothing rises to that level, omit it.
+Each sentence is a plain fact. None interprets. Together they say something none says alone.
+
+If the images do not combine into something beyond what the sections already cover, omit the note entirely.
 
 — On ranking —
 Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.
@@ -91,7 +93,7 @@ const TOOL_INPUT_SCHEMA = {
     },
     note: {
       type: "string",
-      description: "Optional. One sentence, stated plainly, about what is actually present in this dream. Omit if nothing rises to that level.",
+      description: "Optional. 2–4 plain factual sentences about what the combination of images establishes that no single image says alone. Omit if the images do not combine into something beyond what the sections already cover.",
     },
   },
   required: ["images"],

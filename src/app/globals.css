@@ -25,7 +25,7 @@ body {
 .container {
   max-width: 500px;
   margin: 0 auto;
-  padding: 96px 32px 80px;
+  padding: 48px 32px 80px;
 }
 
 h1 {
@@ -250,11 +250,10 @@ td.fact-cell {
 }
 
 .note-text {
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 2;
   color: #D4B300;
   margin-top: 10px;
-  font-style: italic;
 }
 
 .relationships {
@@ -347,13 +346,13 @@ td.fact-cell {
   color: #F5CE00;
 }
 
-/* ── Footer ── */
-.footer {
-  text-align: center;
-  padding: 32px;
+/* ── Header ── */
+.header {
+  padding: 18px 32px;
   font-size: 11px;
   letter-spacing: 0.04em;
   color: #2A3870;
+  text-align: center;
 }
 
 /* ── Dream history (idle state) ── */
