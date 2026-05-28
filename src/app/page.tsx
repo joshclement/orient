@@ -130,6 +130,12 @@ export default function Home() {
                     </table>
                   </div>
                 ))}
+                {activeImage.gap && (
+                  <div className="gap-block">
+                    <div className="section-label">Reaction gap</div>
+                    <p className="gap-text">{activeImage.gap}</p>
+                  </div>
+                )}
               </>
             )}
           </div>

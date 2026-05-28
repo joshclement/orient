@@ -4,20 +4,82 @@ import { db, type DreamImage } from "@/lib/db";
 
 const SYSTEM_PROMPT = `You are a dream image reader working in the "Way of the Image" / orientational approach.
 
-Your task: identify every concrete image in the dream text and describe each one according to its objective nature — not psychological symbolism, not the dreamer's personal associations. What the thing actually IS. How it actually moves, lives, functions. What its actual character is in the world.
+Your task: identify every concrete image in the dream and describe each one according to its objective nature. Not symbolism. Not the dreamer's associations. What the thing actually is, how it actually behaves, what it actually does in the world.
 
-For each image:
-- Choose 2–4 section labels that fit the image (e.g. Body, Behavior, Habitat, Character, Movement, Nature)
-- Write 3–6 brief facts per section describing the objective nature of the thing
-- Add a "Context in this dream" section with 2–3 observations about how this image appears specifically in this dream
+— On plain language —
+Every fact must describe what the thing does or is. If a sentence could not appear in a field guide or encyclopedia entry, cut it. Do not write what things represent or embody. Write what they are.
 
-In the "Context in this dream" section: note any facts that are strange, out of place, or impossible given the image's actual nature. For example, a shark appearing in a freshwater river is abnormal — sharks cannot survive in fresh water. Flag these by including their 0-based index in abnormalIndices.
+Wrong: "The river represents the flow of the unconscious."
+Right: "Rivers move in one direction, from higher to lower elevation."
 
-Images to find: animals, places (swamp, forest, city), objects, structures, elements (water, fire), people (stranger, child), plants, weather — anything concrete that appears in the dream.
+— On each image —
+Choose 2–4 section labels that fit the image (e.g. Body, Behavior, Habitat, Movement, Structure).
+Write 3–6 facts per section. Plain. Specific. Observable.
+Add a "Context in this dream" section with 2–3 facts about how this image appears in this specific dream.
 
-Write facts that are true regardless of who is dreaming. The porcupine has 30,000 quills whether or not the dreamer owns one. The water's edge shifts whether or not the dreamer grew up near water.
+— On anomaly detection —
+In the "Context in this dream" section, flag any fact where the image appears in a way that departs from its normal context. Do not limit flags to environmental impossibilities. Flag:
+- Inversions of use (a skateboard used with hands instead of feet — skateboards are designed for feet on the deck)
+- Things in the wrong environment (a shark in fresh water — sharks require salt to regulate osmosis)
+- Unusual pairings or social/functional mismatches
+- Anything being used or appearing against its own nature
 
-Assign interestRank: 1 = the most alive/animate/central image, higher numbers = more contextual or environmental. No two images share the same rank.`;
+A skateboard ridden with hands is as significant as a shark in fresh water. Flag both.
+Record the 0-based index of each flagged fact in abnormalIndices.
+
+— On personal reactions —
+After presenting the objective facts of each image, note what the gap between a typical personal reaction and the objective nature reveals. Do not discard the dreamer's associations — use them as a diagnostic. A dreamer who feels calm about a shark is more significant than one who feels frightened: the calm response indicates a failure to register what is objectively present. Name what a typical person tends to feel or think about this image, then state plainly what the objective facts show that the typical reaction misses or obscures. Keep this to 2–3 sentences.
+
+— On ranking —
+Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.`;
+
+const TOOL_INPUT_SCHEMA = {
+  type: "object",
+  properties: {
+    images: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          key: {
+            type: "string",
+            description: "lowercase identifier, e.g. 'alligator'",
+          },
+          name: {
+            type: "string",
+            description: "display name, e.g. 'alligator' or \"water's edge\"",
+          },
+          interestRank: {
+            type: "number",
+            description: "1 = most central, higher = more contextual",
+          },
+          sections: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                label: { type: "string" },
+                facts: { type: "array", items: { type: "string" } },
+                abnormalIndices: {
+                  type: "array",
+                  items: { type: "number" },
+                  description: "0-based indices of context facts that depart from the image's normal nature or use",
+                },
+              },
+              required: ["label", "facts"],
+            },
+          },
+          gap: {
+            type: "string",
+            description: "2–3 sentences: what the typical personal reaction to this image misses or obscures, given its objective nature.",
+          },
+        },
+        required: ["key", "name", "interestRank", "sections", "gap"],
+      },
+    },
+  },
+  required: ["images"],
+};
 
 export async function POST(request: NextRequest) {
   const { dream } = await request.json();
@@ -43,51 +105,9 @@ export async function POST(request: NextRequest) {
       tools: [
         {
           name: "read_dream_images",
-          description:
-            "Return every concrete image found in the dream with factual sections.",
-          input_schema: {
-            type: "object" as const,
-            properties: {
-              images: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    key: {
-                      type: "string",
-                      description: "lowercase identifier, e.g. 'alligator'",
-                    },
-                    name: {
-                      type: "string",
-                      description: "display name, e.g. 'alligator' or \"water's edge\"",
-                    },
-                    interestRank: {
-                      type: "number",
-                      description: "1 = most central, higher = more contextual",
-                    },
-                    sections: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          label: { type: "string" },
-                          facts: { type: "array", items: { type: "string" } },
-                          abnormalIndices: {
-                            type: "array",
-                            items: { type: "number" },
-                            description: "0-based indices of facts that are strange or impossible given the image's actual nature",
-                          },
-                        },
-                        required: ["label", "facts"],
-                      },
-                    },
-                  },
-                  required: ["key", "name", "interestRank", "sections"],
-                },
-              },
-            },
-            required: ["images"],
-          },
+          description: "Return every concrete image found in the dream with factual sections.",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          input_schema: TOOL_INPUT_SCHEMA as any,
         },
       ],
       tool_choice: { type: "tool", name: "read_dream_images" },
@@ -101,8 +121,6 @@ export async function POST(request: NextRequest) {
 
     const { images } = toolUse.input as { images: DreamImage[] };
 
-    // Merge: replace any image whose key matches a curated DB entry with the curated version,
-    // preserving the Claude-generated interestRank and context section (with abnormalIndices).
     const merged = images.map((img) => {
       const curated = db[img.key];
       if (!curated) return img;
@@ -114,7 +132,7 @@ export async function POST(request: NextRequest) {
         ? [...curated.sections, contextSection]
         : curated.sections;
 
-      return { ...curated, interestRank: img.interestRank, sections };
+      return { ...curated, interestRank: img.interestRank, sections, gap: img.gap };
     });
 
     merged.sort((a, b) => a.interestRank - b.interestRank);

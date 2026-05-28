@@ -9,7 +9,8 @@ export interface DreamImage {
   name: string;
   interestRank: number;
   sections: ImageSection[];
-  orient: string;
+  orient?: string;
+  gap?: string;
 }
 
 /** Curated entries — returned instantly without an API call when matched. */
