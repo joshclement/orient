@@ -18,6 +18,7 @@ export default function Home() {
   const [dream, setDream] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<DreamImage[]>([]);
+  const [note, setNote] = useState<string | null>(null);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [loadingWord, setLoadingWord] = useState("Decoding");
 
@@ -35,6 +36,7 @@ export default function Home() {
     setAppState("loading");
     setError(null);
     setImages([]);
+    setNote(null);
     setActiveKey(null);
 
     try {
@@ -47,6 +49,7 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || "Unknown error");
       const imgs: DreamImage[] = data.images ?? [];
       setImages(imgs);
+      setNote(data.note ?? null);
       setActiveKey(imgs[0]?.key ?? null);
       setAppState("done");
     } catch (err) {
@@ -59,6 +62,7 @@ export default function Home() {
     setAppState("idle");
     setDream("");
     setImages([]);
+    setNote(null);
     setActiveKey(null);
     setError(null);
   }
@@ -130,14 +134,15 @@ export default function Home() {
                     </table>
                   </div>
                 ))}
-                {activeImage.gap && (
-                  <div className="gap-block">
-                    <div className="section-label">Reaction gap</div>
-                    <p className="gap-text">{activeImage.gap}</p>
-                  </div>
-                )}
               </>
             )}
+          </div>
+        )}
+
+        {note && (
+          <div className="note-block">
+            <div className="section-label">Worth noting</div>
+            <p className="note-text">{note}</p>
           </div>
         )}
       </div>
@@ -151,6 +156,12 @@ export default function Home() {
       <textarea
         value={dream}
         onChange={(e) => setDream(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            if (dream.trim()) translate();
+          }
+        }}
         placeholder={PLACEHOLDER}
         rows={4}
         autoFocus

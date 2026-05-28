@@ -15,24 +15,28 @@ Right: "Rivers move in one direction, from higher to lower elevation."
 — On each image —
 Choose 2–4 section labels from this list: Body, Behavior, Habitat, Movement, Ecology, Structure, Myth.
 Use whichever labels fit the image — not all are required, but prefer labels that produce the most specific, observable facts.
-Write 3–6 facts per section. Plain. Specific. Observable.
+Write 3–4 facts per section. Plain. Specific. Observable.
 Add a "Context in this dream" section with 2–3 facts about how this image appears in this specific dream.
 
 — On the Myth section —
 Include a Myth section when the image has a documented presence in mythology, folklore, alchemy, religion, or fairy tale. Write only what the image actually does or is in those stories — not what it symbolises. If a river swallows a hero in a myth, write that. Also include patterns in how humans have consistently encountered or responded to this image across cultures and history: what they built around it, feared, revered, or institutionalised. Keep this factual. No interpretation.
 
 — On anomaly detection —
-In the "Context in this dream" section, flag any fact where the image appears in a way that departs from its normal context. Do not limit flags to environmental impossibilities. Flag:
-- Inversions of use (a skateboard used with hands instead of feet — skateboards are designed for feet on the deck)
-- Things in the wrong environment (a shark in fresh water — sharks require salt to regulate osmosis)
-- Unusual pairings or social/functional mismatches
+For every image, after writing its objective facts, ask: does this image appear in its normal context in this dream, or has something about it been displaced, inverted, or misused?
+
+In the "Context in this dream" section, write each fact about how the image appears — and for any fact that describes a departure from the image's normal use, environment, or nature, record its 0-based index in abnormalIndices.
+
+Flag any of the following:
+- Inversions of use (a skateboard ridden with hands — skateboards are designed for feet on the deck)
+- Wrong environment (a shark in fresh water — sharks require salt to regulate osmosis)
+- Functional mismatches (a vehicle on a wharf — wharves are designed for foot traffic and cargo, not driving)
+- Social or relational mismatches
 - Anything being used or appearing against its own nature
 
-A skateboard ridden with hands is as significant as a shark in fresh water. Flag both.
-Record the 0-based index of each flagged fact in abnormalIndices.
+Do not describe a departure neutrally and then omit the flag. If a fact records something that departs from the image's normal use or nature, the index must appear in abnormalIndices.
 
-— On personal reactions —
-After presenting the objective facts of each image, note what the gap between a typical personal reaction and the objective nature reveals. Do not discard the dreamer's associations — use them as a diagnostic. A dreamer who feels calm about a shark is more significant than one who feels frightened: the calm response indicates a failure to register what is objectively present. Name what a typical person tends to feel or think about this image, then state plainly what the objective facts show that the typical reaction misses or obscures. Keep this to 2–3 sentences.
+— On the note —
+After reading all the images, decide whether there is one thing genuinely worth stating. If so, write one sentence — the way Yoram Kaufmann would say it aloud in a session: plain, direct, no hedging, no interpretation. A remark about what is actually present. Not a summary. Not a conclusion. One sentence. If there is nothing that rises to that level, omit it entirely.
 
 — On ranking —
 Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.
@@ -74,13 +78,13 @@ const TOOL_INPUT_SCHEMA = {
               required: ["label", "facts"],
             },
           },
-          gap: {
-            type: "string",
-            description: "2–3 sentences: what the typical personal reaction to this image misses or obscures, given its objective nature.",
-          },
         },
-        required: ["key", "name", "interestRank", "sections", "gap"],
+        required: ["key", "name", "interestRank", "sections"],
       },
+    },
+    note: {
+      type: "string",
+      description: "Optional. One sentence, stated plainly, about what is actually present in this dream. Omit if nothing rises to that level.",
     },
   },
   required: ["images"],
@@ -124,12 +128,12 @@ export async function POST(request: NextRequest) {
       throw new Error("No tool use in response");
     }
 
-    const { images } = toolUse.input as { images: DreamImage[] };
+    const { images, note } = toolUse.input as { images: DreamImage[]; note?: string };
 
     images.sort((a, b) => a.interestRank - b.interestRank);
     const top = images.slice(0, 5);
 
-    return NextResponse.json({ images: top });
+    return NextResponse.json({ images: top, note });
   } catch (err) {
     console.error(err);
     return NextResponse.json(

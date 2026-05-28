@@ -242,18 +242,19 @@ td.fact-cell {
 
 .section-group { margin-bottom: 8px; }
 
-.gap-block {
-  margin-top: 28px;
-  padding: 16px 20px;
+.note-block {
+  margin-top: 48px;
+  padding: 20px 24px;
   background: #0C1440;
-  border-left: 3px solid #2A3870;
+  border-left: 3px solid #F5CE00;
 }
 
-.gap-text {
-  font-size: 14px;
-  line-height: 1.8;
-  color: #8899CC;
+.note-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #D4B300;
   margin-top: 10px;
+  font-style: italic;
 }
 
 .relationships {

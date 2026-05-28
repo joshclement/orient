@@ -9,5 +9,4 @@ export interface DreamImage {
   name: string;
   interestRank: number;
   sections: ImageSection[];
-  gap?: string;
 }
