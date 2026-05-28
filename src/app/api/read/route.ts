@@ -35,7 +35,8 @@ Record the 0-based index of each flagged fact in abnormalIndices.
 After presenting the objective facts of each image, note what the gap between a typical personal reaction and the objective nature reveals. Do not discard the dreamer's associations — use them as a diagnostic. A dreamer who feels calm about a shark is more significant than one who feels frightened: the calm response indicates a failure to register what is objectively present. Name what a typical person tends to feel or think about this image, then state plainly what the objective facts show that the typical reaction misses or obscures. Keep this to 2–3 sentences.
 
 — On ranking —
-Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.`;
+Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.
+Return at most 5 images total. If the dream contains more, include only the 5 most significant.`;
 
 const TOOL_INPUT_SCHEMA = {
   type: "object",
@@ -126,8 +127,9 @@ export async function POST(request: NextRequest) {
     const { images } = toolUse.input as { images: DreamImage[] };
 
     images.sort((a, b) => a.interestRank - b.interestRank);
+    const top = images.slice(0, 5);
 
-    return NextResponse.json({ images });
+    return NextResponse.json({ images: top });
   } catch (err) {
     console.error(err);
     return NextResponse.json(

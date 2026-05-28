@@ -94,7 +94,7 @@ export default function Home() {
 
         {images.length > 0 && (
           <div className="found-section">
-            <div className="found-label">Images found</div>
+            <div className="found-label">Images</div>
             <div className="pills">
               {images.map((img) => (
                 <button
