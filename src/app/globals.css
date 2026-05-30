@@ -368,6 +368,26 @@ td.fact-cell {
   text-align: center;
 }
 
+/* ── Page footer ── */
+.page-footer {
+  position: fixed;
+  bottom: 28px;
+  left: 32px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: #2A3870;
+}
+
+.footer-link {
+  color: #2A3870;
+  text-decoration: none;
+  transition: color 0.12s;
+}
+
+.footer-link:hover {
+  color: #F5CE00;
+}
+
 /* ── About button ── */
 .about-btn {
   position: fixed;

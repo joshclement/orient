@@ -239,6 +239,9 @@ export default function Home() {
         </div>
       )}
 
+      <footer className="page-footer">
+        Inspired by Yoram Kaufmann. Made by <a href="https://joshclement.com/" target="_blank" rel="noopener noreferrer" className="footer-link">Josh Clement</a>.
+      </footer>
     </div>
   );
 }
