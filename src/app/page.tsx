@@ -46,6 +46,7 @@ export default function Home() {
   const [note, setNote] = useState<string | null>(null);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
     setHistory(loadHistory());
@@ -102,6 +103,17 @@ export default function Home() {
 
   const activeImage = images.find((img) => img.key === activeKey) ?? null;
 
+  const aboutOverlay = showAbout && (
+    <div className="about-overlay" onClick={() => setShowAbout(false)}>
+      <div className="about-box" onClick={(e) => e.stopPropagation()}>
+        <button className="about-close" onClick={() => setShowAbout(false)}>Close</button>
+        <p>Dreams are made of images. Most approaches to understanding these images are subjective. Your associations, your feelings, your memories.</p>
+        <p>The subjective is important, but Jungian analyst Yoram Kaufmann believed the objective facts contained meaning too. A shark isn't just a symbol that represents fear. It's also a fish, has no eyelids, must keep moving to breathe, and is one of the oldest living species on earth. These facts are not neutral.</p>
+        <p>Enter your dream. We'll extract the most important images and facts. Use them to orient and find meaning in your dreams.</p>
+      </div>
+    </div>
+  );
+
   // ── Loading screen ──────────────────────────────────────────────
   if (appState === "loading") {
     return (
@@ -118,10 +130,16 @@ export default function Home() {
     );
   }
 
+  const aboutBtn = (
+    <button className="about-btn" onClick={() => setShowAbout(true)}>About</button>
+  );
+
   // ── Results screen ──────────────────────────────────────────────
   if (appState === "done") {
     return (
       <div className="container">
+        {aboutBtn}
+        {aboutOverlay}
         <div className="dream-readonly">
           <p className="dream-readonly-text">"{dream}"</p>
           <button className="reset-btn" onClick={reset}>↩ New dream</button>
@@ -163,7 +181,7 @@ export default function Home() {
                           <tr key={i}>
                             <td className="fact-cell">
                               {section.abnormalIndices?.includes(i) && (
-                                <span className="warning-sign" title="Strange or abnormal">⚠</span>
+                                <span className="warning-sign" title="Strange or abnormal">!</span>
                               )}
                               {fact}
                             </td>
@@ -185,6 +203,8 @@ export default function Home() {
   // ── Idle / input screen ─────────────────────────────────────────
   return (
     <div className="container">
+      {aboutBtn}
+      {aboutOverlay}
       <h1 className="question-heading">What have you been dreaming about?</h1>
       <textarea
         value={dream}

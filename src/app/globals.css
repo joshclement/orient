@@ -25,7 +25,7 @@ body {
 .container {
   max-width: 500px;
   margin: 0 auto;
-  padding: 48px 32px 80px;
+  padding: 80px 32px 80px;
 }
 
 h1 {
@@ -58,7 +58,7 @@ textarea {
   width: 100%;
   background: #0C1440;
   border: none;
-  border-radius: 24px;
+  border-radius: 0;
   color: #F5CE00;
   font-size: 19px;
   line-height: 1.7;
@@ -76,7 +76,7 @@ textarea::placeholder { color: #4A5A99; }
   width: 100%;
   background: transparent;
   border: 1px solid #F5CE00;
-  border-radius: 24px;
+  border-radius: 0;
   color: #F5CE00;
   font-size: 13px;
   font-weight: 600;
@@ -276,9 +276,22 @@ td.fact-cell {
 }
 
 .warning-sign {
-  margin-right: 7px;
-  font-size: 12px;
-  opacity: 0.8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #F5CE00;
+  color: #080E2E;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  margin-right: 9px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
 }
 
 /* ── Question heading (idle state) ── */
@@ -355,9 +368,80 @@ td.fact-cell {
   text-align: center;
 }
 
+/* ── About button ── */
+.about-btn {
+  position: fixed;
+  top: 32px;
+  right: 36px;
+  background: none;
+  border: none;
+  font-family: "Futura", "Futura-Medium", "Century Gothic", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2A3870;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 0.12s;
+  z-index: 10;
+}
+
+.about-btn:hover {
+  color: #F5CE00;
+}
+
+/* ── About overlay ── */
+.about-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 14, 46, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 32px;
+}
+
+.about-box {
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.about-box p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #D4B300;
+}
+
+.about-close {
+  position: absolute;
+  top: -32px;
+  right: 0;
+  background: none;
+  border: none;
+  font-family: "Futura", "Futura-Medium", "Century Gothic", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2A3870;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.12s;
+}
+
+.about-close:hover {
+  color: #F5CE00;
+}
+
 /* ── Dream history (idle state) ── */
 .history {
-  margin-top: 36px;
+  margin-top: 56px;
   display: flex;
   flex-direction: column;
   gap: 12px;

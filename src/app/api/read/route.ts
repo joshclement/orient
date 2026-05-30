@@ -38,14 +38,14 @@ Do not describe a departure neutrally and then omit the flag. If a fact records 
 — On the note —
 The note is only for what the images say together that none of them says individually. Not a summary. Not a restatement of events. Not something already covered in the sections.
 
-Ask: do these images in combination establish a situation that is more specific than any single image alone describes? If yes, state it as 2–4 plain facts — one per sentence. Each fact must be about what the images actually are, not what happens in the dream. No interpretation. No conclusion. Let the facts sit next to each other and let the reader feel the weight.
+Reason through the combination fully — what each image is, what they establish together, what the dreamer's situation actually is given the objective facts. Then find the single sentence that carries the weight of all of it. The sentence that, once read, makes the others unnecessary.
 
-Example (raft + sharks + ocean):
-"The sharks are in their natural environment. The raft is not designed for open ocean. The dreamer is on the only thing keeping them at the surface."
+Write only that one sentence. Plain. No interpretation. No conclusion stated — let the reader arrive there.
 
-Each sentence is a plain fact. None interprets. Together they say something none says alone.
+Example (pot plant + knot + pulling):
+"The dreamer's method of removal — pulling — is the action that would make a knot grip harder."
 
-If the images do not combine into something beyond what the sections already cover, omit the note entirely.
+If no single sentence rises to that level, omit the note entirely.
 
 — On ranking —
 Assign interestRank: 1 = most animate/central, higher = more contextual or environmental. No ties.
@@ -93,7 +93,7 @@ const TOOL_INPUT_SCHEMA = {
     },
     note: {
       type: "string",
-      description: "Optional. 2–4 plain factual sentences about what the combination of images establishes that no single image says alone. Omit if the images do not combine into something beyond what the sections already cover.",
+      description: "Optional. One sentence — the single observation that carries the weight of what the images establish together. Omit if nothing rises to that level.",
     },
   },
   required: ["images"],
