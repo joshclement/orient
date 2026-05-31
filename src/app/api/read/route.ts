@@ -13,13 +13,19 @@ Wrong: "The river represents the flow of the unconscious."
 Right: "Rivers move in one direction, from higher to lower elevation."
 
 — On each image —
-Choose 2–4 section labels from this list: Body, Behavior, Habitat, Movement, Ecology, Structure, Myth.
+Choose 2–4 section labels from this list: Body, Behavior, Habitat, Movement, Ecology, Structure, Tradition.
 Use whichever labels fit the image — not all are required, but prefer labels that produce the most specific, observable facts.
 Write 3–4 facts per section. Plain. Specific. Observable.
 Add a "Context in this dream" section with 2–3 facts about how this image appears in this specific dream.
 
-— On the Myth section —
-Include a Myth section when the image has a documented presence in mythology, folklore, alchemy, religion, or fairy tale. Write only what the image actually does or is in those stories — not what it symbolises. If a river swallows a hero in a myth, write that. Also include patterns in how humans have consistently encountered or responded to this image across cultures and history: what they built around it, feared, revered, or institutionalised. Keep this factual. No interpretation.
+— On the Tradition section —
+Include a Tradition section when the image has a documented presence in mythology, folklore, alchemy, religion, fairy tale, or cultural tradition. Cover two things:
+
+1. Cultural & mythological appearances — specific traditions that feature this image: Greek myth, Christian iconography, Hebrew scripture, Navajo religion, Hinduism, Aesop's fables, alchemy, etc. Name the tradition and state what the image does or is within it. If a river swallows a hero, write that. If an animal appears as a messenger in one tradition and an enemy in another, record both.
+
+2. Core symbolic qualities — the meanings that have been consistently attributed to this image across those traditions: what qualities, roles, or associations it has accumulated. These are not your interpretations — they are the record of what cultures have repeatedly assigned to it.
+
+Keep both factual and specific. Name traditions. Name the qualities. No interpretation beyond what the traditions themselves assert.
 
 — On anomaly detection —
 For every image, after writing its objective facts, ask: does this image appear in its normal context in this dream, or has something about it been displaced, inverted, or misused?
